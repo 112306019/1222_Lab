@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dice Roller</title>
+    <style>
+        /* Add any necessary styling here */
+        .dice-row {
+            display: flex;
+        }
+
+        .die {
+            margin: 5px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 300px; /* Set a fixed width for the table */
+            margin: 20px; /* Add margin for spacing */
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #001f3f; /* Dark blue */
+            color: white;
+        }
+
+        td {
+            background-color: #0074cc; /* Light blue */
+        }
+    </style>
+</head>
+<body>
+    <h1>Dice Roller</h1>
+    
+    <div id="diceContainer">
+    </div>
+
+    <button id="rollButton">Roll Dice</button>
+
+    <table id="frequencyTable">
+    </table>
+
+    <script>
+        function start() {
+            var button = document.getElementById("rollButton");
+            button.addEventListener("click", rollDice, false);
+
+            displayDice();
+        }
+
+        function displayDice() {
+            var diceContainer = document.getElementById("diceContainer");
+
+            for (var i = 0; i < 2; i++) {
+                var diceRow = document.createElement("div");
+                diceRow.className = "dice-row";
+
+                for (var j = 0; j < 6; j++) {
+                    var dieImage = document.createElement("img");
+                    dieImage.className = "die";
+                    dieImage.src = "die1.png";
+                    diceRow.appendChild(dieImage);
+                }
+
+                diceContainer.appendChild(diceRow);
+            }
+        }
+
+        function rollDice() {
+            var diceImages = document.getElementsByClassName("die");
+
+            for (var i = 0; i < diceImages.length; i++) {
+                var dieNumber = Math.floor(Math.random() * 6) + 1;
+                setImage(diceImages[i], dieNumber);
+            }
+
+            updateFrequencyTable();
+        }
+
+        function setImage(dieImage, dieNumber) {
+            dieImage.src = "die" + dieNumber + ".png";
+        }
+
+        function updateFrequencyTable() {
+            var frequencyTable = document.getElementById("frequencyTable");
+            var rows = frequencyTable.getElementsByTagName("tr");
+
+            while (rows.length > 0) {
+                frequencyTable.deleteRow(0);
+            }
+
+            var labelsRow = frequencyTable.insertRow();
+            var faceCell = labelsRow.insertCell();
+            faceCell.innerHTML = "Face";
+            faceCell.style.backgroundColor = "#001f3f";
+            faceCell.style.color = "white";
+            var percentCell = labelsRow.insertCell();
+            percentCell.innerHTML = "Percent";
+            percentCell.style.backgroundColor = "#001f3f";
+            percentCell.style.color = "white";
+
+            var counts = {};
+            for (var i = 0; i < 1000; i++) {
+                var dieNumber = Math.floor(Math.random() * 6) + 1;
+                counts[dieNumber] = (counts[dieNumber] || 0) + 1;
+            }
+
+            for (var face = 1; face <= 6; face++) {
+                var newRow = frequencyTable.insertRow();
+                
+                var faceCell = newRow.insertCell();
+                faceCell.innerHTML = face;
+                faceCell.style.backgroundColor = "#87CEEB";
+
+                var percentCell = newRow.insertCell();
+                percentCell.innerHTML = ((counts[face] || 0) / 1000 * 100).toFixed(2) + "%";
+                percentCell.style.backgroundColor = "#87CEEB";
+            }
+        }
+
+        window.addEventListener("load", start, false);
+    </script>
+</body>
+</html>
